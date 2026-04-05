@@ -4,18 +4,23 @@ metadata:
   name: haproxy-config
 data:
   haproxy.cfg: |
-    global
-        log stdout format raw local0
     defaults
-        log global
         mode http
-        timeout connect 5000ms
-        timeout client 50000ms
-        timeout server 50000ms
-    frontend http-in
-        bind *:80
-        default_backend tomcat-backend
-    backend tomcat-backend
+        timeout connect 5s
+        timeout client 50s
+        timeout server 50s
+
+  
+    resolvers kube-dns
+        nameserver dns1 kube-dns.kube-system.svc.cluster.local:53
+        resolve_retries 3
+        timeout resolve 1s
+        hold valid 10s
+
+    frontend http_front
+        bind *:8080
+        default_backend tomcat_back
+
+    backend tomcat_back
         balance roundrobin
-        # Service Discovery: Using the internal service name
-        server tomcat-1 tomcat-service:8080 check
+        server s1 tomcat-service:8080 check resolvers kube-dns resolve-prefer ipv4

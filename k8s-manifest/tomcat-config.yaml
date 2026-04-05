@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tomcat-html
+data:
+  index.html: |
+    <h1> tomcat working </h1>

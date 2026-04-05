@@ -1,9 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: haproxy-lb
+  name: haproxy-deployment
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: haproxy
@@ -14,14 +13,14 @@ spec:
     spec:
       containers:
       - name: haproxy
-        image: haproxy:2.4
+        image: haproxy:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         volumeMounts:
-        - name: config-volume
+        - name: cfg
           mountPath: /usr/local/etc/haproxy/haproxy.cfg
           subPath: haproxy.cfg
       volumes:
-      - name: config-volume
+      - name: cfg
         configMap:
           name: haproxy-config
