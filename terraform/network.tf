@@ -42,6 +42,36 @@ resource "aws_subnet" "ascendoai_private_subnet" {
   }
 
 }
+
+resource "aws_security_group" "eks_sg" {
+  name   = "eks-private-sg"
+  vpc_id = aws_vpc.ascendoai_vpc.id
+
+  ingress {
+    description     = "Allow Bastion to EKS API"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion_sg.id]
+  }
+  ingress {
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
+    description = "Kubelet API (node-to-node)"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+
+
+}
 resource "aws_vpc_endpoint" "ssm" {
   vpc_id             = aws_vpc.ascendoai_vpc.id
   service_name       = "com.amazonaws.${var.region}.ssm"
@@ -137,41 +167,14 @@ resource "aws_route_table_association" "ascendoai_rta_private" {
 
 
 
-resource "aws_security_group" "eks_sg" {
-  name   = "eks-private-sg"
-  vpc_id = aws_vpc.ascendoai_vpc.id
-
-  ingress {
-    description     = "Allow Bastion to EKS API"
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.bastion_sg.id]
-  }
-
-  egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
-    description = "HTTPS to VPC endpoints and AWS APIs"
-  }
-  egress {
-    from_port   = 10250
-    to_port     = 10250
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
-    description = "Kubelet API (node-to-node)"
-  }
-
-}
 
 
-resource "aws_security_group_rule" "allow_nodeport" {
+
+resource "aws_security_group_rule" "allow_internal_all" {
   type              = "ingress"
-  from_port         = 30000
-  to_port           = 32767
-  protocol          = "tcp"
-  cidr_blocks       = ["10.0.0.0/16"]
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = [var.vpc_cidr]
   security_group_id = aws_security_group.eks_sg.id
 }

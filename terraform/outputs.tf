@@ -27,3 +27,7 @@ output "node_group_name" {
   value = aws_eks_node_group.eks_nodes.node_group_name
 
 }
+
+output "aws_instance_id" {
+  value = aws_instance.bastion.id
+}
