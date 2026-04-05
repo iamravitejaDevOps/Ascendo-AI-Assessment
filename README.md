@@ -76,7 +76,9 @@ brew install amazon-ssm-agent
 aws ssm start-session --target <instance-id>
 ```
 
-- Install aws cli
+- Run these on bastion host
+
+- Install aws cli 
 
 ```python
 sudo apt update -y
@@ -99,6 +101,12 @@ chmod +x kubectl
 
 sudo mv kubectl /usr/local/bin
 ```
+
+- update kube config
+  ```
+  aws eks update-kubeconfig --region us-east-1 --name ascendo_ai_eks_cluster
+  ```
+
 
 - paste the k8s manifest file in bastion server
 
