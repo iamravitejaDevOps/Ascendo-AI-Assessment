@@ -18,7 +18,7 @@ bash init.sh
 permission given like:
 
 ```
-					"eks:*",
+			"eks:*",
           "ec2:*",
           "iam:*",
           "ssm:*",
