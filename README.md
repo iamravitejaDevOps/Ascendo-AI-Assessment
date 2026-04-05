@@ -9,7 +9,7 @@ bash init.sh
 
 - Run these code for infra availability what i did is using root account i create a i am user with policies  then got the credentials of that user
 - if you dont want to create another user remove [iam.tf](http://iam.tf) file
--  run terraform apply with these files then user created with policy , we have to create a credentials and access through as iam user
+-  run terraform apply with these files then user created with policy , we have to create a security credentials and access as IAM user
   - provider.tf
   - backend.tf
   - iam.tf
