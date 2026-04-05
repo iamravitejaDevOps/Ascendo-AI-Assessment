@@ -121,3 +121,7 @@ curl http://<node-ip>:30081 --> to check it is working or not
 o/p: <h1> tomcat working </h1>
 
 ```
+- destroy
+  ```
+  terraform destroy
+  ```
